@@ -1,0 +1,13 @@
+import os
+
+for n in [0.001,0.01,0.1,1]:
+
+    print '\n\n\nN=%f\n\n\n'%n
+    os.system("bin/conex2r -e 17 -E 17 -C 10 -N %f" %n)
+
+    dirlist=os.listdir('.')
+
+    rname=[x for x in dirlist if '.root' in x][0]
+    os.rename(rname,'conex_%f.root' %n)
+
+print 'done'
