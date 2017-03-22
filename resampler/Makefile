@@ -7,7 +7,7 @@ LIBNAME=libresample
 LIB=$(LIBNAME).$(LIBEXTENSION)
 
 CXXFLAGS+=-Wall -ggdb3 -pipe -O3 -pg
-CXXFLAGS+=-I. -fPIC
+CXXFLAGS+=-I. -fPIC 
 
 ROOTCXXFLAGS+=$(shell root-config --cflags)
 ROOTLDFLAGS+=$(shell root-config --libs)
@@ -16,7 +16,8 @@ OBJECTS=CommonBlockParticleCONEX.o  CommonBlockWrapperCONEX.o \
 	CommonBlockParticleCRMC.o  CommonBlockWrapperCRMC.o \
         CommonBlockParticleSIBYLL.o  CommonBlockWrapperSIBYLL.o \
         CommonBlockWrapperSIBYLL_LAB.o \
-        ParticleBlock.o  resample.o
+        ParticleBlock.o  resample.o \
+	FukushimaLambertW.o LambertW.o #KF
 
 all: $(LIB)
 
@@ -30,7 +31,9 @@ $(LIB): CommonBlockParticleCONEX.h  CommonBlockWrapperCONEX.h  CommonBlockCONEX.
 	CommonBlockParticleCRMC.cc  CommonBlockWrapperCRMC.cc \
         CommonBlockParticleSIBYLL.cc  CommonBlockWrapperSIBYLL.cc \
 	CommonBlockWrapperSIBYLL_LAB.cc  \
-        ParticleBlock.cc  resample.cc
+        ParticleBlock.cc  resample.cc \
+	FukushimaLambertW.cc FukushimaLambertW.h \
+	LambertW.cc LambertW.h Horner.h #KF
 
 resample.o: resample.cc
 	$(CXX) -c -o $@ $(CXXFLAGS) $(ROOTCXXFLAGS) $^

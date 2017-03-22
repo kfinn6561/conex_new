@@ -259,6 +259,10 @@ CommonBlockParticleCONEX::GetMass(const int id)
     //case  -131: return -1; break; 
   case   130: 
   case  -130: return fgMassKaonPM; break; // k-
+    //KF:adding kshort and klong and k0_bar
+  case 20:
+  case -20:
+  case -230:
   case   230: return fgMassKaon0; break; // k0
     //case  -230: return  0; break; // k0b
   case   220: return fgMassEta0; break; // eta
@@ -268,7 +272,7 @@ CommonBlockParticleCONEX::GetMass(const int id)
   case  -120: return fgMassPionPM; break; // pi-
     //case   111: return  0; break; // rho0
     //case   121: return +1; break; // rho+ 
-    //case  -121: return -1; break; // rho- 
+    //case  -121: return -1; break; // rho-
   case   110: return fgMassPion0; break; // pi0
     //case   -20: return  0; break; // kshort
     //case    20: return  0; break; // klong

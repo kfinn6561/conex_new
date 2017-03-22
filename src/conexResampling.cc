@@ -25,6 +25,7 @@
 #include <TGraph.h>
 
 #include <TRandom3.h>//KF: for random numbers
+#include <LambertW.h>//KF: for the Lambert W function
 
 using namespace std;
 using namespace resample;
@@ -215,7 +216,10 @@ reducee_(double& Elab, double& ECM, double& Engy, double& Pmod, double& Ekin, do
     Pmod=sqrt(max(0.0,Elab*Elab-Mproj*Mproj));
     Ekin=Elab-Mtarg;//Make other variables fit the reduction in CM energy
     */
-
+    double N=(ECM*gClassicalizationFraction/gClassicalonMass)*utl::LambertW<0>((ECM*gClassicalizationFraction*gClassicalonMass)/(gClassicalizationThreshold*gClassicalizationThreshold))*gNscaling;
+    
+    
+    if (N>2){//N<2 should have been caught earlier, but just in case
     Elab=Elab*(1-gClassicalizationFraction);
     Mtarg=Mtarg*(1-gClassicalizationFraction);
     Mproj=Mproj*(1-gClassicalizationFraction);
@@ -223,11 +227,18 @@ reducee_(double& Elab, double& ECM, double& Engy, double& Pmod, double& Ekin, do
     ECM=sqrt(max(0.0,2*Elab*Mtarg+Mtarg*Mtarg+Mproj*Mproj));
     Engy=ECM;
     Pmod=sqrt(max(0.0,Elab*Elab-Mproj*Mproj)); 
-
+    }else{
+      cout<<"ERROR: classicalized state would contain "<<N<<" particles. Reverting to regular collision"<<endl;
+      gClassicalizationFlag=false;
+    }
 
 
     //NOTE: MAY NOT NEED TO DO THIS SINCE NOT ACTUALLY A REDUCED ENERGY EVENT WITH SAME MASS
   }
+
+
+
+  
 }
 
 /*
@@ -630,32 +641,48 @@ addclassicalization_(CommonBlockCONEX& blockPtr, double* pfive, int& primaryId, 
 void
 classicalcx_(double& factMod, const double& energy, const int& pid, const double& sigma)
 {
+  if (gClassicalizationOff){//look for gClassicalizationOff flag and do nothing if raised
+    factMod=1.0;
+    gClassicalizationFlag=false;//This should be enough to prevent any other code performing classicalization
+    return;
+  }
+  
   const double mtarg=0.94;
   const double mproj=0.94;//KF: assume both projectile and target are protons mass=0.94 hardcoded, may want to update if important
-  const double comEnergy=sqrt(2*mtarg*energy+mtarg*mtarg+mproj*mproj);//KF: assume target is proton mass=0.94 hardcoded, may want to update if important
   gClassicalizationFraction=gRandom->Uniform();//choose fraction of energy to classicalize. TODO this distribution may need to change. currently uniform
+  const double comEnergy=gClassicalizationFraction*sqrt(2*mtarg*energy+mtarg*mtarg+mproj*mproj);//KF: assume target is proton mass=0.94 hardcoded, may want to update if important
   
   //cout << "\n\nentered classicalcx\n";//KF:debug
   //cout<<"Energy is "<<energy<<". comEnergy is "<<comEnergy<<". Threshold is "<<gClassicalizationThreshold<<". Fraction is "<<gClassicalizationFraction<<endl;//KF:debug
 
   //cout<<"com*fraction: "<<comEnergy*gClassicalizationFraction<<". threshold: "<<gClassicalizationThreshold/sqrt(gNscaling)<<endl;//KF:debug
+
+  double N=(comEnergy/gClassicalonMass)*utl::LambertW<0>((comEnergy*gClassicalonMass)/(gClassicalizationThreshold*gClassicalizationThreshold))*gNscaling;
   
-  if (sigma<=0||comEnergy*gClassicalizationFraction<gClassicalizationThreshold/sqrt(gNscaling)){//Add energy*gClassicalizationFraction<gClassicalizationThreshold to this line if we want absolute threshold for classicalization
+  if (sigma<=0||N<2){
+    //need at least 2 particles in classicalized state
     //cout<<"event below threshold"<<endl;//KF:debug
     //cout<<"Sigma: "<<sigma<<endl;//KF:debug
     factMod = 1.0;
     gClassicalizationFlag=false;
       }
   else{
-    double clasigma = M_PI*pow((gClassicalizationFraction*comEnergy)/(gClassicalizationThreshold*gClassicalizationThreshold),2.0)*0.3893793;//number converts between 1/Gev^2 and mb
+    //double old_clasigma = M_PI*pow((gClassicalizationFraction*comEnergy)/(gClassicalizationThreshold*gClassicalizationThreshold),2.0)*0.3893793;//number converts between 1/Gev^2 and mb 
+    double clasigma = M_PI*pow((1./gClassicalonMass)*utl::LambertW<0>((comEnergy*gClassicalonMass)/(gClassicalizationThreshold*gClassicalizationThreshold)),2.0)*0.3893793;//number converts between 1/Gev^2 and mb
     //May want to add a coefficient here. I think it's degenerate with threshold
     double r=gRandom->Uniform();
-    //cout<< "sigma is " << sigma << ". clasigma is " << clasigma <<endl;//KF:debug
+    //cout<<std::scientific;//KF:debug
+    //cout<<"mu r is "<<(gClassicalonMass*gClassicalizationFraction*comEnergy)/(gClassicalizationThreshold*gClassicalizationThreshold)<< " sigma is " << sigma << ". clasigma is " << clasigma <<" old_clasigmas is "<<old_clasigma<<endl;//KF:debug
     if (r>(sigma/(sigma+clasigma))){
     //if (r>0.5){
-      //cout<<"Classicalization Event"<<endl;//KF:debug
-      //cout<<"BH mass= "<<comEnergy*gClassicalizationFraction<<endl;//KF:debug
-      
+      /*
+      cout<<"\n\n\n"<<endl;
+      cout<<"Classicalization Event"<<endl;//KF:debug
+      cout<<"lab energy: "<<energy<<endl;//KF:debug
+      cout<<"BH mass= "<<comEnergy<<endl;//KF:debug
+      cout<<"fraction: "<<gClassicalizationFraction<<endl;//KF:debug
+      cout<<"Number: "<<N<<endl;//KF:debug
+      */
 	gClassicalizationFlag=true;
 	factMod=clasigma/sigma;
 	//factMod=2;

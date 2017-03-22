@@ -18,7 +18,7 @@
 using namespace std;
 
 #include <resample.h>
-
+#include <LambertW.h>//KF: for Lambert W function
 
 namespace resample {
 
@@ -2358,11 +2358,11 @@ void
 ClassicalizationResampling(const double pfive[5], const int projId, ParticleBlock& particlesList, double Mtarg)
 {
   //system("paplay /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga");//KF:debug
-
+  
   cout<<"projectile energy: "<<pfive[3]<<endl;//KF:debug
   cout<<"fraction: "<<gClassicalizationFraction<<endl;//KF:debug
-  cout<<"Mtarg: "<<Mtarg<<endl;//KF:debug
-
+  cout<<"Mtarg: "<<Mtarg<<endl;//KF:debug  
+  
   Mtarg=Mtarg/(1-gClassicalizationFraction);//Undo reduceE, which reduced Mtarg
   
   int nPart = particlesList.Size();
@@ -2376,9 +2376,6 @@ ClassicalizationResampling(const double pfive[5], const int projId, ParticleBloc
   }
 
   cout<<"before resampling. NParticles: "<<nPart<<" total energy: "<<sumEnergy<<endl;//KF:debug
-
-
-  
   
   double BHmass=0.0;
   double cosTheta=0.0;
@@ -2428,7 +2425,8 @@ ClassicalizationResampling(const double pfive[5], const int projId, ParticleBloc
 
     BHmass=sqrt(BHp0*BHp0-BHpx*BHpx-BHpy*BHpy-BHpz*BHpz);
     cout<<"BH mass: "<<BHmass<<endl;//KF:debug
-    int N=(int)(pow(BHmass/gClassicalizationThreshold,2.0)*gNscaling);
+    //int N=(int)(pow(BHmass/gClassicalizationThreshold,2.0)*gNscaling);
+    int N=(int)((BHmass/gClassicalonMass)*utl::LambertW<0>((gClassicalonMass*BHmass)/(gClassicalizationThreshold*gClassicalizationThreshold))*gNscaling);
     cout<<"number of particles in classicalized state: "<<N<<endl;//KF:debug
     cout<<"average energy per particle: "<<BHmass/N<<endl;//KF:debug
 
@@ -2438,7 +2436,7 @@ ClassicalizationResampling(const double pfive[5], const int projId, ParticleBloc
       exit(1);
     }
 
-    while (N>1){
+    while (N>=1){
       const int iPart=int(gRandom->Rndm()*sizeCurrent);
       const ParticleBlockEntry& secondary=particlesList.GetEntry(iPart);
 
@@ -2447,24 +2445,50 @@ ClassicalizationResampling(const double pfive[5], const int projId, ParticleBloc
 	continue;
       }
 
-      particlesList.Duplicate(iPart);//KF create a duplicate particle as a dummy, will change it's momentum accordingly.
+      particlesList.Duplicate(iPart);//KF create a duplicate particle as a dummy, will change it's momentum and id accordingly.
+      //It may be quicker to create a new particle rather than duplicating, but this ensures that creation time/destruction time etc are sensible
       //Add something here to change pi/K ratio
 
+      double typeSwitch=gRandom->Rndm();//choose which particle to spit out, from pions and kaons
 
+      //resample::CommonBlockParticleCONEX::EParticleId NewParticleID;//default to pi0
+      int NewParticleID=CommonBlockParticleCONEX::ePi0;//default to pi0
+      if (typeSwitch<1./7.){
+	NewParticleID=CommonBlockParticleCONEX::ePi0;//pi0
+      }else if (typeSwitch<2./7.){
+	NewParticleID=CommonBlockParticleCONEX::ePiP;//pi+
+      }else if (typeSwitch<3./7.){
+	NewParticleID=CommonBlockParticleCONEX::ePiM;//pi-  
+      }else if (typeSwitch<4./7.){
+	NewParticleID=CommonBlockParticleCONEX::eKshort;//pi- 
+      }else if (typeSwitch<5./7.){
+	NewParticleID=CommonBlockParticleCONEX::eKlong;//K_l/s
+      }else if (typeSwitch<6./7.){
+	NewParticleID=CommonBlockParticleCONEX::eKP;//K+  
+      }else {
+	NewParticleID=CommonBlockParticleCONEX::eKM;//K-
+      }
+
+      
       ParticleBlockEntry& newParticle=particlesList.GetEntry(particlesList.Size()-1);//the last particle should be the one we just duplicated
       
+      newParticle.SetId(NewParticleID);    
+      newParticle.SetMass(CommonBlockParticleCONEX::GetMass(NewParticleID));//set mass and id to correct type
+     
+      if (N!=2){//for N=2 need to choose 2 final particles
+	
       BHmass=sqrt(BHp0*BHp0-BHpx*BHpx-BHpy*BHpy-BHpz*BHpz);//current mass of the black hole
       cosTheta=gRandom->Rndm()*2.-1;//random number between -1 and 1
       sinTheta=sqrt(1-cosTheta*cosTheta)*double(2*int(gRandom->Rndm()*2)-1);
       phi=gRandom->Rndm()*2*M_PI;
 
-      if (N==2){
-	const int iPartfnl=int(gRandom->Rndm()*sizeCurrent);
-	particlesList.Duplicate(iPartfnl);
-	p0com=0.5*(BHmass*BHmass+pow(newParticle.GetMass(),2)-pow(particlesList.GetEntry(iPartfnl).GetMass(),2))/BHmass;//the final spitting
+      if (N==1){
+	p0com=0.5*(BHmass*BHmass+pow(newParticle.GetMass(),2)-pow(particlesList.GetEntry(particlesList.Size()-2).GetMass(),2))/BHmass;//the final spitting
       }else{
-      p0com=0.5*(pow(gClassicalizationThreshold,2)/gNscaling+pow(newParticle.GetMass(),2))/BHmass;
+	double m_Nm1 = ((N-1)*gClassicalonMass)/(gNscaling*2*utl::LambertW<0>((sqrt((N-1)/gNscaling)*gClassicalonMass)/(2*gClassicalizationThreshold)));//mass of N-1 classicalized state
+	p0com=0.5*(pow(BHmass,2)+pow(newParticle.GetMass(),2)-pow(m_Nm1,2))/BHmass;
       }
+      //cout<<"ID: "<<newParticle.GetId()<<" particle mass: "<<newParticle.GetMass()<<" p0com: "<<p0com<<" ";//KF:debug
 
       //cout<<"p0com: "<<p0com<<". mass "<<newParticle.GetMass()<<endl;//KF:debug
       
@@ -2501,17 +2525,17 @@ ClassicalizationResampling(const double pfive[5], const int projId, ParticleBloc
       BHpy-=py;
       BHpz-=pz;
 
+
       newParticle.SetEnergy(p0);
       newParticle.SetPx(px);
       newParticle.SetPy(py);
       newParticle.SetPz(pz);
-
-
-
+      
+      }//end ifN==2
       N--;
 
     }//end loop over particles coming out of BH
-    ParticleBlockEntry& newParticle=particlesList.GetEntry(particlesList.Size()-1);//The final particle
+    ParticleBlockEntry& newParticle=particlesList.GetEntry(particlesList.Size()-2);//The final particle
 
     newParticle.SetEnergy(BHp0);
     newParticle.SetPx(BHpx);
@@ -2531,7 +2555,8 @@ ClassicalizationResampling(const double pfive[5], const int projId, ParticleBloc
     }
 
     cout<<"after resampling. NParticles: "<<nPart<<" total energy: "<<sumEnergy<<endl;//KF:debug  
-      
+
+    //particlesList.Dump();//KF:debug
 } // end ClassicalizationResample
 
 

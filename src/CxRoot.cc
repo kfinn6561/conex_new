@@ -603,10 +603,10 @@ CxRoot::GetOptions(int argc, char** argv)
   help << " -X [crossSectionFactor] -P [mesonExtraFactor] -M [resamplingFactor] -L [prtcleListMode] -F [prtcleListFile]"
        << " -T [modifications-threshold]"
        << " -R [resampling mode]\n"
+       << "-C [Classicalization threshold], -N [Classicalization number rescaling], -c [Classicalon Mass], -Q [turn off classicalization]\n"  
        << "\n"
        << "     prtcle-list-mode: i (i>0) - write particles of generation i, 0 - OFF, <0 - read from file \n"
        << "      resampling-mode:  1 - multiplicity, 2 - elasticity, 3 - EMratio, 4 - ChargeRatio, 5 - Pi0spec, 6 - LeadingRho0, 7 - BaryonProduction \n";
-  help<< "-C [Classicalization threshold], -N [Classicalization number rescaling]\n";//KF: add classicalization threshold to input options
 
 
   gParticleListMode = 0;
@@ -621,6 +621,8 @@ CxRoot::GetOptions(int argc, char** argv)
   gClassicalizationFlag=false;
   gClassicalizationFraction=0.0;
   gNscaling=1.0;
+  gClassicalonMass=0.5;//mass of classical quanta (this may want to be changed for the kaon mass)
+  gClassicalizationOff=false;//if true turns off classicalization behaviour
 #endif
 
 
@@ -630,7 +632,7 @@ CxRoot::GetOptions(int argc, char** argv)
   options = "K:" + options;
 #endif
 #ifdef CONEX_EXTENSIONS
-  options = "N:C:X:P:M:T:L:F:R:" + options;
+  options = "Qc:N:C:X:P:M:T:L:F:R:" + options;
 #endif
   while ((c = getopt (argc, argv, options.c_str())) != -1) {
     switch (c) {
@@ -687,6 +689,18 @@ CxRoot::GetOptions(int argc, char** argv)
       {
 	gNscaling = atof(optarg);
 	cout<<"Nscaling set to "<<gNscaling<<endl;//KF:debug
+	break;
+      }
+    case 'c'://KF: classicalonmass
+      {
+	gClassicalonMass=atof(optarg);
+	cout<<"classicalon mass set to "<<gClassicalonMass<<endl;
+	break;
+      }
+    case 'Q'://KF: turn off classicalization
+      {
+	gClassicalizationOff=true;
+	cout<<"Classicalization Turned off"<<endl;
 	break;
       }
       
@@ -859,10 +873,10 @@ CxRoot::rootOut(int iopt, double e)
       exit(1);
       break;
     }
-    //rootFileName << "_" << setw(9) << setfill('0') << fSeed
-    //             << "_" << fParticleID
-    //             << ".root";
-    rootFileName<<"_"<<gClassicalizationThreshold<<"_"<<gNscaling<<".root";
+    rootFileName << "_" << setw(9) << setfill('0') << fSeed
+                 << "_" << fParticleID
+                 << ".root";
+    //rootFileName<<"_"<<gClassicalizationThreshold<<"_"<<gNscaling<<".root";
 
 #ifdef DEBUG_RESAMPLING
     const string name = rootFileName.str().substr(0, rootFileName.str().rfind(".root"))

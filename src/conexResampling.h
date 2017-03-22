@@ -30,7 +30,8 @@ extern bool gClassicalizationFlag; //flag to see if classicalization occurred
 extern double gClassicalizationThreshold; //classicalization energy threshold
 extern double gClassicalizationFraction; //fraction of energy in classicalization event
 extern double gNscaling;//classicalization number scaling
-
+extern double gClassicalonMass;//Mass of classical quanta
+extern bool gClassicalizationOff;
 
 // ------------------------------------------------
 //  function definitions

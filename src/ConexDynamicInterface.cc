@@ -32,7 +32,8 @@ double gClassicalizationThreshold= pow(10.0,15 - 9);//GeV
 bool gClassicalizationFlag=false;
 double gClassicalizationFraction=0.0;
 double gNscaling=1.0;
-
+double gClassicalonMass=0.5;
+bool gClassicalizationOff=false;
 
 resample::EResampleMode gResamplingMode = resample::eNone;
 
