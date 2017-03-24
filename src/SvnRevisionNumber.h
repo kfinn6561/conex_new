@@ -3,6 +3,6 @@
 
 #include <string>
 
-const std::string gSvnRevision("5620M");
+const std::string gSvnRevision("unknown");
 
 #endif
