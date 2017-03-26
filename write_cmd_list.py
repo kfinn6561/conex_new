@@ -1,10 +1,9 @@
 import numpy as np
 
 N0=0.03
-Mss=[0,1,2,5,10,20,50,100]
+Mss=[0,1,5,10,20,50,100]
 Es=np.linspace(18,21,11)
 nsamples=10
-data_dir=''
 outfile='cmd_list.txt'
 f=open(outfile,'w')
 

@@ -6,6 +6,7 @@ import time
 def run_conex(cmd,logname):
     os.environ['ROOTSYS']=os.environ['HOME']+'/root-install'
     os.environ['PATH']+=os.pathsep+os.environ['ROOTSYS']+'/bin'
+    os.environ['ROOT_OUT']='/export/ursa1/ktf243'#specific to ursa
     try:
         os.environ['LD_LIBRARY_PATH']+=os.pathsep+os.environ['ROOTSYS']+'/lib/root'
     except KeyError:
@@ -20,15 +21,17 @@ class fakethread():
         return
     def is_alive(self):
         return False
+    def join(self):
+        return True
         
-Ncores=4
+Ncores=12
 
 print 'using %d cores' %Ncores
 start=time.time()
 f=open('cmd_list.txt','r')
 cmds=f.readlines()
 f.close()
-cmds=cmds[:9]#debug
+#cmds=cmds[:9]#debug
 
 threads=[fakethread() for i in range(Ncores)] #there may be a better way to do this
 
