@@ -2,6 +2,7 @@ import numpy as np
 
 N0=0.03
 Mss=[0,1,5,10,20,50,100]
+Mss=[0]
 Es=np.linspace(18,21,11)
 nsamples=10
 outfile='cmd_list.txt'
@@ -17,7 +18,8 @@ for Ms in Mss:
         else:
             cmd += ' -C %d -N %g -x cl_%d '%(Ms,N0,Ms)
         print cmd
-        f.write(cmd+'\n')
+        for i in range(100):
+            f.write(cmd+'\n')
 
 f.close() 
 print 'done'
