@@ -26,7 +26,7 @@ class fakethread():
         return True
         
 Ns=range(4,15)
-outfile=open('compare_ncores_split.txt','w')
+outfile='compare_ncores_split.txt'
 
 for Ncores in Ns:
     print 'using %d cores' %Ncores
@@ -54,6 +54,7 @@ for Ncores in Ns:
     for thread in threads:
         thread.join()
     finish=time.time()
-    outfile.write('%d\t%f\n'%(Ncores,finish-start))
-outfile.close()
+    f=open(outfile,'a')
+    f.write('%d\t%f\n'%(Ncores,finish-start))
+    f.close()
 print 'All jobs completed'
