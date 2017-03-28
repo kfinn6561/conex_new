@@ -3,7 +3,7 @@ import os
 import subprocess
 import time
 
-def run_conex(cmd_list,logname):
+def run_conex(cmd,logname):
     os.environ['ROOTSYS']=os.environ['HOME']+'/root-install'
     os.environ['PATH']+=os.pathsep+os.environ['ROOTSYS']+'/bin'
     os.environ['ROOT_OUT']='/export/ursa1/ktf243'#specific to ursa
@@ -12,8 +12,7 @@ def run_conex(cmd_list,logname):
     except KeyError:
         os.environ['LD_LIBRARY_PATH']=os.environ['ROOTSYS']+'/lib/root'        
     logfile=open(logname,'a')
-    for cmd in cmd_list:
-        subprocess.call([cmd],stdout=logfile,shell=True)
+    subprocess.call([cmd],stdout=logfile,shell=True)
     logfile.close()
 
     
@@ -25,13 +24,15 @@ class fakethread():
     def join(self):
         return True
         
-Ns=range(1,15)
-outfile=open('compare_ncores_split.txt','w')
+groups=[1,2,3,4,5,6,10,20,30,60]
+outfile=open('compare_splittings_split.txt','w')
+Ncores=12
+print 'using %d cores' %Ncores
 
-for Ncores in Ns:
-    print 'using %d cores' %Ncores
+for group in groups:
+    print 'splitting into %d groups' %group
     start=time.time()
-    f=open('cmd_list.txt','r')
+    f=open('splittings_cmd_list_%d.txt' %group,'r')
     cmds=f.readlines()
     f.close()
     #cmds=cmds[:9]#debug
@@ -54,6 +55,6 @@ for Ncores in Ns:
     for thread in threads:
         thread.join()
     finish=time.time()
-    outfile.write('%d\t%f\n'%(Ncores,finish-start))
+    outfile.write('%d\t%f\n'%(group,finish-start))
 outfile.close()
 print 'All jobs completed'

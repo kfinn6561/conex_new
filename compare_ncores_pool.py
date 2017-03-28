@@ -51,6 +51,6 @@ for Ncores in Ns:
     for thread in threads:
         thread.join()
     finish=time.time()
-    outfile.write('%d\t%f'%(Ncores,finish-start))
+    outfile.write('%d\t%f\n'%(Ncores,finish-start))
 outfile.close()
 print 'All jobs completed'
