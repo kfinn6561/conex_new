@@ -25,7 +25,7 @@ class fakethread():
     def join(self):
         return True
         
-Ns=range(1,15)
+Ns=range(4,15)
 outfile=open('compare_ncores_split.txt','w')
 
 for Ncores in Ns:
