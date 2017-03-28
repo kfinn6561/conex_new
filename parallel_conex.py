@@ -46,7 +46,17 @@ while job_no<len(cmds):
             job_no+=1
 
 print 'All jobs assigned. Waiting for completion'
-for thread in threads:
+
+running_threads=range(Ncores)
+
+while len(running_threads)>0:
+    for i in range(Ncores):
+        if i in running_threads and not threads[i].is_alive():
+            print 'Core %d has finished running: %d jobs remaining' %(i+1,len(running_threads)-1)
+            running_threads.remove(i)
+
+
+for thread in threads:#this should be unecessary
     thread.join()
 
 print 'All jobs completed'
