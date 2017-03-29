@@ -6,7 +6,7 @@ E=19.5
 nsamples=10
 
 Nsamples=60
-groups=[1,2,3,4,5,6,10,20,30,60]
+groups=[10,12,15,20,30,60]
 
 for group in groups:
     f=open('splittings_cmd_list_%d.txt','w')
