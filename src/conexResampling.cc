@@ -641,6 +641,10 @@ addclassicalization_(CommonBlockCONEX& blockPtr, double* pfive, int& primaryId, 
 void
 classicalcx_(double& factMod, const double& energy, const int& pid, const double& sigma)
 {
+  /* if (energy>1e9){
+      factMod=50.0;
+      return;
+      }//KF:debug*/
   if (gClassicalizationOff){//look for gClassicalizationOff flag and do nothing if raised
     factMod=1.0;
     gClassicalizationFlag=false;//This should be enough to prevent any other code performing classicalization
