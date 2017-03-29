@@ -9,7 +9,7 @@ Nsamples=60
 groups=[1,2,3,4,5,6,10,20,30,60]
 
 for group in groups:
-    f=open('splittings_cmd_list_%d.txt','w')
+    f=open('splittings_cmd_list_%d.txt' %group,'w')
     nsamples=Nsamples/group
     cmd='bin/conex2r -E %g -e %g -n %d' %(E,E,nsamples)
     if Ms==0:

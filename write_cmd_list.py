@@ -2,9 +2,10 @@ import numpy as np
 
 N0=0.03
 Mss=[0,1,5,10,20,50,100]
+Mss=[10,50]
 Es=np.linspace(18,20,11)
-Edict={18:10,18.3:10,18.7:10,19:10,19.3:5,19.7:1,20:1}
-Es=Edict.keys()
+#Edict={18:10,18.3:10,18.7:10,19:10,19.3:5,19.7:1,20:1}
+#Es=Edict.keys()
 nsamples=10
 outfile='cmd_list.txt'
 f=open(outfile,'w')
@@ -19,7 +20,7 @@ for Ms in Mss:
         else:
             cmd += ' -C %d -N %g -x cl_%d '%(Ms,N0,Ms)
         print cmd
-        for i in range(Edict[E]):
+        for i in range(1):
             f.write(cmd+'\n')
 
 f.close() 

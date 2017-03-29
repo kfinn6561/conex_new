@@ -25,7 +25,7 @@ class fakethread():
     def join(self):
         return True
         
-Ns=range(4,15)
+Ns=range(8,15)
 outfile=open('compare_ncores_split.txt','w')
 
 for Ncores in Ns:
@@ -39,7 +39,7 @@ for Ncores in Ns:
     threads=[fakethread() for i in range(Ncores)] #there may be a better way to do this
     no_jobs=len(cmds)
     jobs_per_core=int(no_jobs)/int(Ncores)
-    jobs=[jobs_per_core for i in Ncores]
+    jobs=[jobs_per_core for i in range(Ncores)]
     for i in range(no_jobs-jobs_per_core*Ncores):
         jobs[i]+=1    
     job_no=0
