@@ -24,7 +24,7 @@ class fakethread():
     def join(self):
         return True
         
-groups=[1,2,3,4,5,6,10,20,30,60]
+groups=[10,12,15,20,30,60]
 outfile='compare_splittings_pool.txt'
 Ncores=12
 print 'using %d cores' %Ncores
