@@ -3,7 +3,7 @@ import os
 import subprocess
 import time
 
-def run_conex(cmd,logname):
+def run_conex(cmd_list,logname):
     os.environ['ROOTSYS']=os.environ['HOME']+'/root-install'
     os.environ['PATH']+=os.pathsep+os.environ['ROOTSYS']+'/bin'
     os.environ['ROOT_OUT']='/export/ursa1/ktf243'#specific to ursa
@@ -12,7 +12,8 @@ def run_conex(cmd,logname):
     except KeyError:
         os.environ['LD_LIBRARY_PATH']=os.environ['ROOTSYS']+'/lib/root'        
     logfile=open(logname,'a')
-    subprocess.call([cmd],stdout=logfile,shell=True)
+    for cmd in cmd_list:
+        subprocess.call([cmd],stdout=logfile,shell=True)
     logfile.close()
 
     
@@ -24,7 +25,7 @@ class fakethread():
     def join(self):
         return True
         
-groups=[1,2,3,4,5,6,10,20,30,60]
+groups=[10,12,15,20,30,60]
 outfile='compare_splittings_split.txt'
 Ncores=12
 print 'using %d cores' %Ncores
@@ -40,7 +41,7 @@ for group in groups:
     threads=[fakethread() for i in range(Ncores)] #there may be a better way to do this
     no_jobs=len(cmds)
     jobs_per_core=int(no_jobs)/int(Ncores)
-    jobs=[jobs_per_core for i in Ncores]
+    jobs=[jobs_per_core for i in range(Ncores)]
     for i in range(no_jobs-jobs_per_core*Ncores):
         jobs[i]+=1    
     job_no=0
