@@ -25,7 +25,7 @@ class fakethread():
         return True
         
 groups=[1,2,3,4,5,6,10,20,30,60]
-outfile=open('compare_splittings_split.txt','w')
+outfile='compare_splittings_split.txt'
 Ncores=12
 print 'using %d cores' %Ncores
 
@@ -55,6 +55,7 @@ for group in groups:
     for thread in threads:
         thread.join()
     finish=time.time()
-    outfile.write('%d\t%f\n'%(group,finish-start))
-outfile.close()
+    f=open(outfile,'a')
+    f.write('%d\t%f\n'%(group,finish-start))
+    f.close()
 print 'All jobs completed'
