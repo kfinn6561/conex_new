@@ -2430,7 +2430,7 @@ ClassicalizationResampling(const double pfive[5], const int projId, ParticleBloc
     cout<<"number of particles in classicalized state: "<<N<<endl;//KF:debug
     cout<<"average energy per particle: "<<BHmass/N<<endl;//KF:debug
     if (N*0.5>BHmass){
-      cout<<"Error: Insufficient energy to make "<<N<<" particles. "
+      cout<<"Error: Insufficient energy to make "<<N<<" particles. ";
       N=(int)(BHmass/0.5);
       cout<<"Making the maximum of "<<N<<"."<<endl;
     } //require at least 500MeV per particle. This prevents issues of particles with energy above their mass
