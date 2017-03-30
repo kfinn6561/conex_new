@@ -13,13 +13,13 @@ f=open(outfile,'w')
 
 for Ms in Mss:
     for E in Es:
-        cmd='bin/conex2r -E %g -e %g -n %d' %(E,E,nsamples)
+        cmd='bin/conex2r -E %g -e %g' %(E,E)
         if Ms==0:
             cmd +=' -Q -x no_cl '
         else:
             cmd += ' -C %d -N %g -c 0.17 -x cl_%d '%(Ms,N0,Ms)
         print cmd
-        for i in range(1):
+        for i in range(nsamples):
             f.write(cmd+'\n')
 
 f.close() 
