@@ -27,7 +27,6 @@ class fakethread():
 Ncores=12
 
 print 'using %d cores' %Ncores
-start=time.time()
 f=open('cmd_list.txt','r')
 cmds=f.readlines()
 f.close()
@@ -44,6 +43,7 @@ while job_no<len(cmds):
             threads[i]=threading.Thread(target=run_conex,args=(cmd,'log_%d.txt' %(i+1),))
             threads[i].start()
             job_no+=1
+    time.sleep(5)
 
 print 'All jobs assigned. Waiting for completion'
 
@@ -54,6 +54,7 @@ while len(running_threads)>0:
         if i in running_threads and not threads[i].is_alive():
             print 'Core %d has finished running: %d jobs remaining' %(i+1,len(running_threads)-1)
             running_threads.remove(i)
+    time.sleep(5)
 
 
 for thread in threads:#this should be unecessary
