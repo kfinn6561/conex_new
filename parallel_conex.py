@@ -62,6 +62,7 @@ except:
 
 Ncores=12
 max_runtime=5.*3600#5 hours should be long enough for any shower. If it takes longer than this it has probably crashed
+#timeout not implimented
 
 print 'using %d cores' %Ncores
 f=open('cmd_list.txt','r')
@@ -79,11 +80,6 @@ while job_no<len(cmds):
     while job_no in completed_jobs:
         job_no+=1
     for i in range(Ncores):
-        if start_times[i] and (time.time()-start_times[i]>max_runtime):
-            print 'Core %d will be killed because its taking too long' %(i+1)
-            start_times[i]=False
-            running_jobs[i]=False
-            threads[i]._Thread_stop()
         if job_no<len(cmds) and not threads[i].is_alive():
             cmd=cmds[job_no][:-2]
             print '\njob %d of %d: running %s on core %d' %(job_no+1,len(cmds),cmd,i+1)
@@ -105,11 +101,6 @@ running_threads=range(Ncores)
 
 while len(running_threads)>0:
     for i in range(Ncores):
-        if start_times[i] and (time.time()-start_times[i]>max_runtime):
-            print 'Core %d will be killed because its taking too long' %(i+1)
-            start_times[i]=False
-            running_jobs[i]=False
-            threads[i]._Thread_stop()
         if i in running_threads and not threads[i].is_alive():
             print '\nCore %d has finished running: %d jobs remaining' %(i+1,len(running_threads)-1)
             running_threads.remove(i)
