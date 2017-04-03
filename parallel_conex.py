@@ -43,9 +43,9 @@ def timing_update(start_times):
     out=''
     for i in range(len(start_times)):
         if start_times[i]:
-            out+='core %d: %s. ' %(i+1,hms(now-start_times[i]))
+            out+='%d: %s. ' %(i+1,hms(now-start_times[i]))
         else:
-            out+='core %d: stopped ' %(i+1)
+            out+='%d: stopped ' %(i+1)
     overprint(out)
         
 completed_fname='completed.dat'
