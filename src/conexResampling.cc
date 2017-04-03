@@ -26,6 +26,7 @@
 
 #include <TRandom3.h>//KF: for random numbers
 #include <LambertW.h>//KF: for the Lambert W function
+#include <fstream>//KF: to read in data
 
 using namespace std;
 using namespace resample;
@@ -633,8 +634,42 @@ addclassicalization_(CommonBlockCONEX& blockPtr, double* pfive, int& primaryId, 
 
 }
 
+void
+ReadProbData()
+{
+  //KF: read in probability data
+  std::ifstream probfile("overlap_data.dat");
+  std::string temp;
+  if (probfile.is_open())
+    {
+      int i=0;
+      while (!probfile.eof())
+	{
+	  getline(probfile,temp);
+	  ProbDistDat[i]=atof(temp.c_str());
+	  //cout<<"data "<<i<<": "<<temp<<endl;
+	  i++;
+	}
+    }
+  ReadData=false;//set flag to prevent data being read in more than once
+}
 
 
+//KF: Calculate the fractional energy that classicalises
+double
+GetFraction(double ranNo)
+{
+  if (ReadData)
+    {
+      ReadProbData();
+    }
+  int i=(int)(ranNo*1000);//Assumes the probability data is sampled at 1001 evenly spaced out places between 0 and 1. This is quicker, but less robust
+  double x1=i*0.001;
+  double x2=(i+1)*0.001;
+  double y1=ProbDistDat[i];
+  double y2=ProbDistDat[i+1];
+  return ((y1-y2)/(x1-x2))*(ranNo-x1)+y1;//Linear interpolation
+}
 
 
 //KF: decide whether this is a classicalization event and alter the cross section accordingly. This sets gClassicalizationFlag
@@ -653,7 +688,8 @@ classicalcx_(double& factMod, const double& energy, const int& pid, const double
   
   const double mtarg=0.94;
   const double mproj=0.94;//KF: assume both projectile and target are protons mass=0.94 hardcoded, may want to update if important
-  gClassicalizationFraction=gRandom->Uniform();//choose fraction of energy to classicalize. TODO this distribution may need to change. currently uniform
+  //gClassicalizationFraction=gRandom->Uniform();//choose fraction of energy to classicalize. TODO this distribution may need to change. currently uniform
+  gClassicalizationFraction=GetFraction(gRandom->Uniform());//using overlap of two spheres
   const double comEnergy=gClassicalizationFraction*sqrt(2*mtarg*energy+mtarg*mtarg+mproj*mproj);//KF: assume target is proton mass=0.94 hardcoded, may want to update if important
   
   //cout << "\n\nentered classicalcx\n";//KF:debug

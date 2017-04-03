@@ -9,6 +9,7 @@
 #include <conexConfig.h>
 #include <ResamplingMode.h>
 
+#include <fstream>
 class TFile;
 class TTree;
 
@@ -33,6 +34,8 @@ extern double gNscaling;//classicalization number scaling
 extern double gClassicalonMass;//Mass of classical quanta
 extern bool gClassicalizationOff;
 
+double ProbDistDat[1001];
+bool ReadData=true;
 // ------------------------------------------------
 //  function definitions
 //
