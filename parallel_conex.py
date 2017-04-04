@@ -80,7 +80,7 @@ print 'using %d cores' %Ncores
 f=open('cmd_list.txt','r')
 cmds=f.readlines()
 f.close()
-cmds=cmds[:9]#debug
+#cmds=cmds[:9]#debug
 
 threads=[fakethread() for i in range(Ncores)] #there may be a better way to do this
 start_times=[False for i in range(Ncores)]
