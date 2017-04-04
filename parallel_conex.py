@@ -1,9 +1,13 @@
-import threading
 import multiprocessing
 import os
 import subprocess
 import time
 import sys
+
+Ncores=12
+max_runtime=5.*3600#5 hours should be long enough for any shower. If it takes longer than this it has probably crashed
+#timeout not implimented
+max_runtime=42
 
 def run_conex(cmd,logname):
     os.environ['ROOTSYS']=os.environ['HOME']+'/root-install'
@@ -48,6 +52,17 @@ def timing_update(start_times):
         else:
             out+='%d: stopped ' %(i+1)
     overprint(out)
+    
+def check_for_deaths(threads,start_times):
+    now=time.time()
+    out=[]
+    for i in range(len(start_times)):
+        if now-start_times[i]>max_runtime:
+            print 'core %d has become stuck. Terminating' %(i+1)
+            threads[i].terminate()
+            out.append(i)
+    return out
+        
         
 completed_fname='completed.dat'
 completed_jobs=[]
@@ -61,9 +76,7 @@ try:
 except:
     pass
 
-Ncores=12
-max_runtime=5.*3600#5 hours should be long enough for any shower. If it takes longer than this it has probably crashed
-#timeout not implimented
+
 
 print 'using %d cores' %Ncores
 f=open('cmd_list.txt','r')
@@ -74,7 +87,7 @@ f.close()
 threads=[fakethread() for i in range(Ncores)] #there may be a better way to do this
 start_times=[False for i in range(Ncores)]
 running_jobs=[False for i in range(Ncores)]
-
+spaces=' '*80
 
 job_no=0
 while job_no<len(cmds):
@@ -83,7 +96,7 @@ while job_no<len(cmds):
     for i in range(Ncores):
         if job_no<len(cmds) and not threads[i].is_alive():
             cmd=cmds[job_no][:-2]
-            print '\njob %d of %d: running %s on core %d' %(job_no+1,len(cmds),cmd,i+1)
+            print '%s\njob %d of %d: running %s on core %d' %(spaces,job_no+1,len(cmds),cmd,i+1)
             #threads[i]=threading.Thread(target=run_conex,args=(cmd,'log_%d.txt' %(i+1),))
             threads[i]=multiprocessing.Process(target=run_conex,args=(cmd,'log_%d.txt' %(i+1),))
             threads[i].start()
@@ -94,6 +107,9 @@ while job_no<len(cmds):
                 f.close()
             running_jobs[i]=job_no
             job_no+=1
+    deaths=check_for_deaths(threads, start_times)
+    for i in deaths:
+        running_jobs[i]=False
     timing_update(start_times)
     time.sleep(5)
 
@@ -104,13 +120,16 @@ running_threads=range(Ncores)
 while len(running_threads)>0:
     for i in range(Ncores):
         if i in running_threads and not threads[i].is_alive():
-            print '\nCore %d has finished running: %d jobs remaining' %(i+1,len(running_threads)-1)
+            print '%s\nCore %d has finished running: %d jobs remaining' %(spaces,i+1,len(running_threads)-1)
             running_threads.remove(i)
             start_times[i]=False
             if running_jobs[i]:
                 f=open(completed_fname,'a')
                 f.write('%d\n'%running_jobs[i])
                 f.close()
+    deaths=check_for_deaths(threads, start_times)
+    for i in deaths:
+        running_jobs[i]=False
     timing_update(start_times)
     time.sleep(5)
 
