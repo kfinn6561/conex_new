@@ -1,4 +1,5 @@
 import threading
+import multiprocessing
 import os
 import subprocess
 import time
@@ -83,7 +84,8 @@ while job_no<len(cmds):
         if job_no<len(cmds) and not threads[i].is_alive():
             cmd=cmds[job_no][:-2]
             print '\njob %d of %d: running %s on core %d' %(job_no+1,len(cmds),cmd,i+1)
-            threads[i]=threading.Thread(target=run_conex,args=(cmd,'log_%d.txt' %(i+1),))
+            #threads[i]=threading.Thread(target=run_conex,args=(cmd,'log_%d.txt' %(i+1),))
+            threads[i]=multiprocessing.Process(target=run_conex,args=(cmd,'log_%d.txt' %(i+1),))
             threads[i].start()
             start_times[i]=time.time()
             if running_jobs[i]:
