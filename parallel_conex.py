@@ -6,8 +6,6 @@ import sys
 
 Ncores=12
 max_runtime=5.*3600#5 hours should be long enough for any shower. If it takes longer than this it has probably crashed
-#timeout not implimented
-max_runtime=42
 
 def run_conex(cmd,logname):
     os.environ['ROOTSYS']=os.environ['HOME']+'/root-install'
@@ -57,8 +55,8 @@ def check_for_deaths(threads,start_times):
     now=time.time()
     out=[]
     for i in range(len(start_times)):
-        if now-start_times[i]>max_runtime:
-            print 'core %d has become stuck. Terminating' %(i+1)
+        if start_times[i] and (now-start_times[i]>max_runtime):
+            print '\ncore %d has become stuck. Terminating' %(i+1)
             threads[i].terminate()
             out.append(i)
     return out
@@ -82,7 +80,7 @@ print 'using %d cores' %Ncores
 f=open('cmd_list.txt','r')
 cmds=f.readlines()
 f.close()
-#cmds=cmds[:9]#debug
+cmds=cmds[:9]#debug
 
 threads=[fakethread() for i in range(Ncores)] #there may be a better way to do this
 start_times=[False for i in range(Ncores)]
@@ -109,6 +107,7 @@ while job_no<len(cmds):
             job_no+=1
     deaths=check_for_deaths(threads, start_times)
     for i in deaths:
+        start_times[i]=False
         running_jobs[i]=False
     timing_update(start_times)
     time.sleep(5)
@@ -129,6 +128,7 @@ while len(running_threads)>0:
                 f.close()
     deaths=check_for_deaths(threads, start_times)
     for i in deaths:
+        start_times[i]=False
         running_jobs[i]=False
     timing_update(start_times)
     time.sleep(5)
