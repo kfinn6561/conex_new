@@ -16,7 +16,7 @@ nsamples=1000
 for Ms in Mss:
     for E in Es:
 '''
-for i in range(1):
+for i in range(2):
     Ms=Mss[i]
     E=Es[i]
     cmd='bin/conex2r -E %g -e %g' %(E,E)
