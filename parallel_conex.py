@@ -136,4 +136,5 @@ while len(running_threads)>0:
 
 for thread in threads:#this should be unecessary
     thread.join()
+os.remove(completed_fname)
 print '\nAll jobs completed'
