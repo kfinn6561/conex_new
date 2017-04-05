@@ -85,7 +85,6 @@ f.close()
 threads=[fakethread() for i in range(Ncores)] #there may be a better way to do this
 start_times=[False for i in range(Ncores)]
 running_jobs=[False for i in range(Ncores)]
-spaces=' '*80
 
 job_no=0
 while job_no<len(cmds):
@@ -94,7 +93,7 @@ while job_no<len(cmds):
     for i in range(Ncores):
         if job_no<len(cmds) and not threads[i].is_alive():
             cmd=cmds[job_no][:-2]
-            print '%s\njob %d of %d: running %s on core %d' %(spaces,job_no+1,len(cmds),cmd,i+1)
+            print '\njob %d of %d: running %s on core %d' %(job_no+1,len(cmds),cmd,i+1)
             #threads[i]=threading.Thread(target=run_conex,args=(cmd,'log_%d.txt' %(i+1),))
             threads[i]=multiprocessing.Process(target=run_conex,args=(cmd,'log_%d.txt' %(i+1),))
             threads[i].start()
@@ -119,7 +118,7 @@ running_threads=range(Ncores)
 while len(running_threads)>0:
     for i in range(Ncores):
         if i in running_threads and not threads[i].is_alive():
-            print '%s\nCore %d has finished running: %d jobs remaining' %(spaces,i+1,len(running_threads)-1)
+            print '\nCore %d has finished running: %d jobs remaining' %(i+1,len(running_threads)-1)
             running_threads.remove(i)
             start_times[i]=False
             if running_jobs[i]:
