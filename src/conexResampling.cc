@@ -691,13 +691,17 @@ classicalcx_(double& factMod, const double& energy, const int& pid, const double
   //gClassicalizationFraction=gRandom->Uniform();//choose fraction of energy to classicalize. TODO this distribution may need to change. currently uniform
   gClassicalizationFraction=GetFraction(gRandom->Uniform());//using overlap of two spheres
   const double comEnergy=gClassicalizationFraction*sqrt(2*mtarg*energy+mtarg*mtarg+mproj*mproj);//KF: assume target is proton mass=0.94 hardcoded, may want to update if important
+
+  gClassicalizationFraction=1.0;//rm_cl
   
   //cout << "\n\nentered classicalcx\n";//KF:debug
   //cout<<"Energy is "<<energy<<". comEnergy is "<<comEnergy<<". Threshold is "<<gClassicalizationThreshold<<". Fraction is "<<gClassicalizationFraction<<endl;//KF:debug
 
   //cout<<"com*fraction: "<<comEnergy*gClassicalizationFraction<<". threshold: "<<gClassicalizationThreshold/sqrt(gNscaling)<<endl;//KF:debug
 
+  
   double N=(comEnergy/gClassicalonMass)*utl::LambertW<0>((comEnergy*gClassicalonMass)/(gClassicalizationThreshold*gClassicalizationThreshold))*gNscaling;
+  N=3;//rm_cl
   
   if (sigma<=0||N<2){
     //need at least 2 particles in classicalized state
@@ -724,6 +728,7 @@ classicalcx_(double& factMod, const double& energy, const int& pid, const double
       cout<<"Number: "<<N<<endl;//KF:debug
       */
 	gClassicalizationFlag=true;
+	gClassicalizationFlag=false;//rm_cl
 	factMod=clasigma/sigma;
 	//factMod=2;
 	}
