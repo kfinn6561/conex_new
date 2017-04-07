@@ -9,24 +9,19 @@ nsamples=50
 outfile='cmd_list.txt'
 f=open(outfile,'w')
 
-Mss=[10,12]
-Es=[18.7,19.5]
-nsamples=1000
-'''
+
 for Ms in Mss:
     for E in Es:
-'''
-for i in range(2):
-    Ms=Mss[i]
-    E=Es[i]
-    cmd='bin/conex2r -E %g -e %g' %(E,E)
-    if Ms==0:
-        cmd +=' -Q -x no_cl '
-    else:
-        cmd += ' -C %d -N %g -c 0.17 -x cl_%d '%(Ms,N0,Ms)
-    print cmd
-    for i in range(nsamples):
-        f.write(cmd+'\n')
+        Ms=Mss[i]
+        E=Es[i]
+        cmd='bin/conex2r -E %g -e %g' %(E,E)
+        if Ms==0:
+            cmd +=' -Q -x no_cl '
+        else:
+            cmd += ' -C %d -N %g -c 0.17 -x cl_%d '%(Ms,N0,Ms)
+        print cmd
+        for i in range(nsamples):
+            f.write(cmd+'\n')
 
 f.close() 
 print 'done'
