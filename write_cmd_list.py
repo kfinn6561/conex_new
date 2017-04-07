@@ -12,8 +12,6 @@ f=open(outfile,'w')
 
 for Ms in Mss:
     for E in Es:
-        Ms=Mss[i]
-        E=Es[i]
         cmd='bin/conex2r -E %g -e %g' %(E,E)
         if Ms==0:
             cmd +=' -Q -x no_cl '
