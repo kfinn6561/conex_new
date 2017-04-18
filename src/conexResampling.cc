@@ -690,6 +690,7 @@ classicalcx_(double& factMod, const double& energy, const int& pid, const double
   const double mproj=0.94;//KF: assume both projectile and target are protons mass=0.94 hardcoded, may want to update if important
   //gClassicalizationFraction=gRandom->Uniform();//choose fraction of energy to classicalize. TODO this distribution may need to change. currently uniform
   gClassicalizationFraction=GetFraction(gRandom->Uniform());//using overlap of two spheres
+  gClassicalizationFraction=0.9;//const fraction
   const double comEnergy=gClassicalizationFraction*sqrt(2*mtarg*energy+mtarg*mtarg+mproj*mproj);//KF: assume target is proton mass=0.94 hardcoded, may want to update if important
 
   //gClassicalizationFraction=1.0;//rm_cl
