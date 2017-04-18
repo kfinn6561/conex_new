@@ -2457,17 +2457,17 @@ ClassicalizationResampling(const double pfive[5], const int projId, ParticleBloc
 
       //resample::CommonBlockParticleCONEX::EParticleId NewParticleID;//default to pi0
       int NewParticleID=CommonBlockParticleCONEX::ePi0;//default to pi0
-      if (typeSwitch<1./7.){
+      if (typeSwitch<20./44.){
 	NewParticleID=CommonBlockParticleCONEX::ePi0;//pi0
-      }else if (typeSwitch<2./7.){
+      }else if (typeSwitch<30./44.){
 	NewParticleID=CommonBlockParticleCONEX::ePiP;//pi+
-      }else if (typeSwitch<3./7.){
+      }else if (typeSwitch<40./44.){
 	NewParticleID=CommonBlockParticleCONEX::ePiM;//pi-  
-      }else if (typeSwitch<4./7.){
-	NewParticleID=CommonBlockParticleCONEX::eKshort;//pi- 
-      }else if (typeSwitch<5./7.){
-	NewParticleID=CommonBlockParticleCONEX::eKlong;//K_l/s
-      }else if (typeSwitch<6./7.){
+      }else if (typeSwitch<41./44.){
+	NewParticleID=CommonBlockParticleCONEX::eKshort;//K_s 
+      }else if (typeSwitch<42./44.){
+	NewParticleID=CommonBlockParticleCONEX::eKlong;//K_l
+      }else if (typeSwitch<43./44.){
 	NewParticleID=CommonBlockParticleCONEX::eKP;//K+  
       }else {
 	NewParticleID=CommonBlockParticleCONEX::eKM;//K-
