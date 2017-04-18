@@ -28,11 +28,13 @@ double gFactorResampling = 1;
 double gResamplingThreshold = 15-9;
 
 //KF: Classicalization
-double gClassicalizationThreshold= pow(10.0,15 - 9);//GeV
+double gClassicalizationThreshold= 15.;//GeV
 bool gClassicalizationFlag=false;
 double gClassicalizationFraction=0.0;
 double gNscaling=1.0;
-double gClassicalonMass=0.5;
+double gClassicalonMass=0.17;
+double gClasigma=0.;
+double gSigma0=1.;
 bool gClassicalizationOff=false;
 
 resample::EResampleMode gResamplingMode = resample::eNone;

@@ -676,10 +676,6 @@ GetFraction(double ranNo)
 void
 classicalcx_(double& factMod, const double& energy, const int& pid, const double& sigma)
 {
-  /* if (energy>1e9){
-      factMod=50.0;
-      return;
-      }//KF:debug*/
   if (gClassicalizationOff){//look for gClassicalizationOff flag and do nothing if raised
     factMod=1.0;
     gClassicalizationFlag=false;//This should be enough to prevent any other code performing classicalization
@@ -692,54 +688,45 @@ classicalcx_(double& factMod, const double& energy, const int& pid, const double
   gClassicalizationFraction=GetFraction(gRandom->Uniform());//using overlap of two spheres
   gClassicalizationFraction=0.9;//const fraction
   const double comEnergy=gClassicalizationFraction*sqrt(2*mtarg*energy+mtarg*mtarg+mproj*mproj);//KF: assume target is proton mass=0.94 hardcoded, may want to update if important
-
-  //gClassicalizationFraction=1.0;//rm_cl
-  
-  //cout << "\n\nentered classicalcx\n";//KF:debug
-  //cout<<"Energy is "<<energy<<". comEnergy is "<<comEnergy<<". Threshold is "<<gClassicalizationThreshold<<". Fraction is "<<gClassicalizationFraction<<endl;//KF:debug
-
-  //cout<<"com*fraction: "<<comEnergy*gClassicalizationFraction<<". threshold: "<<gClassicalizationThreshold/sqrt(gNscaling)<<endl;//KF:debug
-
-  
   double N=(comEnergy/gClassicalonMass)*utl::LambertW<0>((comEnergy*gClassicalonMass)/(gClassicalizationThreshold*gClassicalizationThreshold))*gNscaling;
   //N=3;//rm_cl
-  
-  if (sigma<=0||N<2){
-    //need at least 2 particles in classicalized state
-    //cout<<"event below threshold"<<endl;//KF:debug
-    //cout<<"Sigma: "<<sigma<<endl;//KF:debug
-    factMod = 1.0;
-    gClassicalizationFlag=false;
-      }
-  else{
-    //double old_clasigma = M_PI*pow((gClassicalizationFraction*comEnergy)/(gClassicalizationThreshold*gClassicalizationThreshold),2.0)*0.3893793;//number converts between 1/Gev^2 and mb 
-    double clasigma = M_PI*pow((1./gClassicalonMass)*utl::LambertW<0>((comEnergy*gClassicalonMass)/(gClassicalizationThreshold*gClassicalizationThreshold)),2.0)*0.3893793;//number converts between 1/Gev^2 and mb
-    //May want to add a coefficient here. I think it's degenerate with threshold
-    double r=gRandom->Uniform();
-    //cout<<std::scientific;//KF:debug
-    //cout<<"mu r is "<<(gClassicalonMass*gClassicalizationFraction*comEnergy)/(gClassicalizationThreshold*gClassicalizationThreshold)<< " sigma is " << sigma << ". clasigma is " << clasigma <<" old_clasigmas is "<<old_clasigma<<endl;//KF:debug
-    if (r>(sigma/(sigma+clasigma))){
-    //if (r>0.5){
-      /*
-      cout<<"\n\n\n"<<endl;
-      cout<<"Classicalization Event"<<endl;//KF:debug
-      cout<<"lab energy: "<<energy<<endl;//KF:debug
-      cout<<"BH mass= "<<comEnergy<<endl;//KF:debug
-      cout<<"fraction: "<<gClassicalizationFraction<<endl;//KF:debug
-      cout<<"Number: "<<N<<endl;//KF:debug
-      */
-	gClassicalizationFlag=true;
-	//gClassicalizationFlag=false;//rm_cl
-	factMod=clasigma/sigma;
-	//factMod=2;
-	}
-      else{
-	gClassicalizationFlag=false;
-	factMod=1.0;
-	  }
-      }
-  //cout << "finished classicalcx, gClassicalizationFlag is "<<gClassicalizationFlag <<", factMod is "<<factMod<<endl;//KF:debug
+
+  if (N<2){
+    //below classicalization threshold
+    gClasigma=0.;
+  }else{
+    gClasigma = M_PI*pow((1./gClassicalonMass)*utl::LambertW<0>((comEnergy*gClassicalonMass)/(gClassicalizationThreshold*gClassicalizationThreshold)),2.0)*0.3893793;//number converts between 1/Gev^2 and mb
   }
+  
+  gSigma0=sigma;
+  
+  factMod=(sigma+gClasigma)/sigma;
+  
+  }
+
+void
+checkclassicalization_(double& dz, const double& avog, const double& AMeanAir)//probably a better way to get avog and Ameanair, but this should work
+{
+  if (gClassicalizationOff){//No classicalization
+    gClassicalizationFlag=false;
+    return;
+  }
+  //cout<<std::scientific;//KF:debug
+  //cout<<"\n\nentered checkclassicalization"<<endl;//KF:debug
+  //cout<<"avog: "<<avog<<endl;//KF:debug
+    double sigEffective=(gClasigma-gSigma0)*avog/AMeanAir;//Effective cross section in cm^2/g (avog already has conversion from mb to cm^2)
+    double pClassicalize=1./((gSigma0/gClasigma)*exp(sigEffective*dz)+1);//Probability to classicalize
+    //cout<<"Probability to classicalize: "<<pClassicalize<<endl;//KF:debug
+
+    double r=gRandom->Uniform();
+
+    if (r<pClassicalize){
+      gClassicalizationFlag=true;
+    }else{
+      gClassicalizationFlag=false;
+    }
+    
+}
 
 
 void 

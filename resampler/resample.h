@@ -19,6 +19,8 @@ extern double gClassicalizationThreshold;//KF
 extern double gClassicalizationFraction;//KF
 extern double gNscaling;//KF
 extern double gClassicalonMass;//KF
+extern double gClasigma;//KF
+extern double gSigma0;//KF
 extern bool gClassicalizationOff;
 
 namespace resample {

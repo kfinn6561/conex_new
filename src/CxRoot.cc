@@ -617,11 +617,13 @@ CxRoot::GetOptions(int argc, char** argv)
   gResamplingMode = resample::eNone;
 
   //KF: Default values for global classicalization variables
-  gClassicalizationThreshold=150.;//GeV
+  gClassicalizationThreshold=15.;//GeV
   gClassicalizationFlag=false;
   gClassicalizationFraction=0.0;
   gNscaling=1.0;
-  gClassicalonMass=0.5;//mass of classical quanta (this may want to be changed for the kaon mass)
+  gClassicalonMass=0.17;//mass of classical quanta (this may want to be changed for the kaon mass)
+  gClasigma=0.;
+  gSigma0=1.;
   gClassicalizationOff=false;//if true turns off classicalization behaviour
 #endif
 

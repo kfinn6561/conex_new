@@ -32,6 +32,8 @@ extern double gClassicalizationThreshold; //classicalization energy threshold
 extern double gClassicalizationFraction; //fraction of energy in classicalization event
 extern double gNscaling;//classicalization number scaling
 extern double gClassicalonMass;//Mass of classical quanta
+extern double gClasigma;//Clasicalization cross section
+extern double gSigma0;//regular cross section
 extern bool gClassicalizationOff;
 
 double ProbDistDat[1001];
@@ -60,6 +62,7 @@ extern "C" {
   void classicalcx_(double& factMod, const double& energy, const int& pid, const double& sigma);
 
   void reducee_(double& Elab, double& ECM, double& Engy, double& Pmod, double& Ekin, double& Mproj, double& Mtarg);//KF
+  void checkclassicalization_(double& dz, const double& avog, const double& AMeanAir);//KF
 
 }
 
