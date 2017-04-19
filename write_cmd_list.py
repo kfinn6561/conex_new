@@ -1,8 +1,8 @@
 import numpy as np
 
 N0=0.03
-Mss=[0,1,5,7,10,12,15]
-Es=np.linspace(18,20,11)
+Mss=[5,7,10,12,0]
+Es=np.linspace(17.8,20,12)
 #Edict={18:10,18.3:10,18.7:10,19:10,19.3:5,19.7:1,20:1}
 #Es=Edict.keys()
 nsamples=50

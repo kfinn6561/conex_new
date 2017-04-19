@@ -88,9 +88,9 @@ running_jobs=[False for i in range(Ncores)]
 
 job_no=0
 while job_no<len(cmds):
-    while job_no in completed_jobs:
-        job_no+=1
     for i in range(Ncores):
+        while job_no in completed_jobs:
+            job_no+=1
         if job_no<len(cmds) and not threads[i].is_alive():
             cmd=cmds[job_no][:-2]
             print '\njob %d of %d: running %s on core %d' %(job_no+1,len(cmds),cmd,i+1)
