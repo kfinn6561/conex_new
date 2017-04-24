@@ -1,13 +1,18 @@
 import numpy as np
 
 N0=0.03
-Mss=[5,7,10,12,0,15,20,50]
+calc_no_cl=True
+Mss=[10,50,100,150,200]
+Mcs=[0.5,0.17,0.1,0.05]
+Fs=[0.9,0.5,0.1]
+
 Es=np.linspace(17.8,20,12)
-#Edict={18:10,18.3:10,18.7:10,19:10,19.3:5,19.7:1,20:1}
-#Es=Edict.keys()
 nsamples=50
 outfile='cmd_list.txt'
 f=open(outfile,'w')
+
+if calc_no_cl:
+    
 
 
 for Ms in Mss:
