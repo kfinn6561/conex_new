@@ -620,6 +620,7 @@ CxRoot::GetOptions(int argc, char** argv)
   gClassicalizationThreshold=15.;//GeV
   gClassicalizationFlag=false;
   gClassicalizationFraction=0.0;
+  gFixedFraction=0.9;
   gNscaling=1.0;
   gClassicalonMass=0.17;//mass of classical quanta (this may want to be changed for the kaon mass)
   gClasigma=0.;
@@ -634,7 +635,7 @@ CxRoot::GetOptions(int argc, char** argv)
   options = "K:" + options;
 #endif
 #ifdef CONEX_EXTENSIONS
-  options = "Qc:N:C:X:P:M:T:L:F:R:" + options;
+  options = "Qc:N:C:X:P:M:T:L:F:R:f:" + options;
 #endif
   while ((c = getopt (argc, argv, options.c_str())) != -1) {
     switch (c) {
@@ -697,6 +698,12 @@ CxRoot::GetOptions(int argc, char** argv)
       {
 	gClassicalonMass=atof(optarg);
 	cout<<"classicalon mass set to "<<gClassicalonMass<<endl;
+	break;
+      }
+    case 'f'://KF: fixed fraction
+      {
+	gFixedFraction=atof(optarg);
+	cout<<"Fixed fraction: "<<gFixedFraction<<endl;
 	break;
       }
     case 'Q'://KF: turn off classicalization

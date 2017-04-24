@@ -31,6 +31,7 @@ double gResamplingThreshold = 15-9;
 double gClassicalizationThreshold= 15.;//GeV
 bool gClassicalizationFlag=false;
 double gClassicalizationFraction=0.0;
+double gFixedFraction=0.9;
 double gNscaling=1.0;
 double gClassicalonMass=0.17;
 double gClasigma=0.;

@@ -685,8 +685,8 @@ classicalcx_(double& factMod, const double& energy, const int& pid, const double
   const double mtarg=0.94;
   const double mproj=0.94;//KF: assume both projectile and target are protons mass=0.94 hardcoded, may want to update if important
   //gClassicalizationFraction=gRandom->Uniform();//choose fraction of energy to classicalize. TODO this distribution may need to change. currently uniform
-  gClassicalizationFraction=GetFraction(gRandom->Uniform());//using overlap of two spheres
-  gClassicalizationFraction=0.9;//const fraction
+  //gClassicalizationFraction=GetFraction(gRandom->Uniform());//using overlap of two spheres
+  gClassicalizationFraction=gFixedFraction;//const fraction
   const double comEnergy=gClassicalizationFraction*sqrt(2*mtarg*energy+mtarg*mtarg+mproj*mproj);//KF: assume target is proton mass=0.94 hardcoded, may want to update if important
   double N=(comEnergy/gClassicalonMass)*utl::LambertW<0>((comEnergy*gClassicalonMass)/(gClassicalizationThreshold*gClassicalizationThreshold))*gNscaling;
   //N=3;//rm_cl
@@ -705,17 +705,13 @@ classicalcx_(double& factMod, const double& energy, const int& pid, const double
   }
 
 void
-checkclassicalzation_(double& dz)
+checkclassicalization_(double& dz)
 {
   if (gClassicalizationOff){//No classicalization
     gClassicalizationFlag=false;
     return;
   }
-  //cout<<std::scientific;//KF:debug
-  //cout<<"\n\nentered checkclassicalization"<<endl;//KF:debug
-  //cout<<"avog: "<<avog<<endl;//KF:debug
-    double sigEffective=(gClasigma-gSigma0)//Effective cross section in cm^2/g (avog already has conversion from mb to cm^2)
-    double pClassicalize=1./((gSigma0/gClasigma)*exp(sigEffective*dz)+1);//Probability to classicalize
+  double pClassicalize=1./((gSigma0/gClasigma)*exp((gClasigma-gSigma0)*dz)+1);//Probability to classicalize
     //cout<<"Probability to classicalize: "<<pClassicalize<<endl;//KF:debug
 
     double r=gRandom->Uniform();
