@@ -705,7 +705,7 @@ classicalcx_(double& factMod, const double& energy, const int& pid, const double
   }
 
 void
-checkclassicalization_(double& dz, const double& avog, const double& AMeanAir)//probably a better way to get avog and Ameanair, but this should work
+checkclassicalzation_(double& dz)
 {
   if (gClassicalizationOff){//No classicalization
     gClassicalizationFlag=false;
@@ -714,7 +714,7 @@ checkclassicalization_(double& dz, const double& avog, const double& AMeanAir)//
   //cout<<std::scientific;//KF:debug
   //cout<<"\n\nentered checkclassicalization"<<endl;//KF:debug
   //cout<<"avog: "<<avog<<endl;//KF:debug
-    double sigEffective=(gClasigma-gSigma0)*avog/AMeanAir;//Effective cross section in cm^2/g (avog already has conversion from mb to cm^2)
+    double sigEffective=(gClasigma-gSigma0)//Effective cross section in cm^2/g (avog already has conversion from mb to cm^2)
     double pClassicalize=1./((gSigma0/gClasigma)*exp(sigEffective*dz)+1);//Probability to classicalize
     //cout<<"Probability to classicalize: "<<pClassicalize<<endl;//KF:debug
 

@@ -62,7 +62,7 @@ extern "C" {
   void classicalcx_(double& factMod, const double& energy, const int& pid, const double& sigma);
 
   void reducee_(double& Elab, double& ECM, double& Engy, double& Pmod, double& Ekin, double& Mproj, double& Mtarg);//KF
-  void checkclassicalization_(double& dz, const double& avog, const double& AMeanAir);//KF
+  void checkclassicalization_(double& dz);//KF
 
 }
 
