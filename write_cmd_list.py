@@ -6,9 +6,10 @@ Mss=[10,50,100,150,200]
 Mcs=[0.5,0.17,0.1,0.05]
 Fs=[0.9,0.5,0.1]
 
+Mss=[]
 Es=np.linspace(17.8,20,12)
-nsamples=25
-percmd= 1
+nsamples=50
+percmd= 10
 outfile='cmd_list.txt'
 f=open(outfile,'w')
 
