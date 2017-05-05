@@ -5,7 +5,9 @@ import time
 import sys
 
 Ncores=12
-max_runtime=5.*3600#5 hours should be long enough for any shower. If it takes longer than this it has probably crashed
+max_runtime=2.*3600#5 hours should be long enough for any shower. If it takes longer than this it has probably crashed
+
+system_name=os.uname()[1].split('.')[0]#ursa or ursa1
 
 def run_conex(cmd,logname):
     os.environ['ROOTSYS']=os.environ['HOME']+'/root-install'
@@ -62,7 +64,7 @@ def check_for_deaths(threads,start_times):
     return out
         
         
-completed_fname='completed.dat'
+completed_fname='completed_%s.dat' %system_name
 completed_jobs=[]
 try:
     if 'restart' in sys.argv:
@@ -95,7 +97,7 @@ while job_no<len(cmds):
             cmd=cmds[job_no][:-2]
             print '\njob %d of %d: running %s on core %d' %(job_no+1,len(cmds),cmd,i+1)
             #threads[i]=threading.Thread(target=run_conex,args=(cmd,'log_%d.txt' %(i+1),))
-            threads[i]=multiprocessing.Process(target=run_conex,args=(cmd,'log_%d.txt' %(i+1),))
+            threads[i]=multiprocessing.Process(target=run_conex,args=(cmd,'log_%d_%s.txt' %((i+1),system_name),))
             threads[i].start()
             start_times[i]=time.time()
             if running_jobs[i]:
