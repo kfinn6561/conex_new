@@ -205,7 +205,7 @@ reducee_(double& Elab, double& ECM, double& Engy, double& Pmod, double& Ekin, do
 {
   //cout << "Entered ClassicalizationReduceEnergy"<<endl;//KF:debug
   //cout << "starting energy is " << Elab << endl;//KF:debug
-  if (gClassicalizationFlag){
+  if (gClassicalizationFlag and (gClassicalizationFraction<1)){//if more than 100% classicalization there will be issues with negative energy
     //cout << "Classicalization event, reducing energy" << endl;//KF:debug
 
 

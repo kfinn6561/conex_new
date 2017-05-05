@@ -2362,20 +2362,23 @@ ClassicalizationResampling(const double pfive[5], const int projId, ParticleBloc
   cout<<"projectile energy: "<<pfive[3]<<endl;//KF:debug
   cout<<"fraction: "<<gClassicalizationFraction<<endl;//KF:debug
   cout<<"Mtarg: "<<Mtarg<<endl;//KF:debug  
-  
-  Mtarg=Mtarg/(1-gClassicalizationFraction);//Undo reduceE, which reduced Mtarg
-  
-  int nPart = particlesList.Size();
 
+
+  if (gClassicalizationFraction<1){
+    Mtarg=Mtarg/(1-gClassicalizationFraction);//Undo reduceE, which reduced Mtarg
+  }
+  
+  int nPart0 = particlesList.Size();
+  
   // get leading particles in forward/backward direction
   double sumEnergy = 0;
 
-  for (int i=0;i<nPart;i++){
+  for (int i=0;i<nPart0;i++){
     ParticleBlockEntry& tParticle=particlesList.GetEntry(i);
     sumEnergy+=tParticle.GetEnergy();
   }
 
-  cout<<"before resampling. NParticles: "<<nPart<<" total energy: "<<sumEnergy<<endl;//KF:debug
+  cout<<"before resampling. NParticles: "<<nPart0<<" total energy: "<<sumEnergy<<endl;//KF:debug
   
   double BHmass=0.0;
   double cosTheta=0.0;
@@ -2548,8 +2551,13 @@ ClassicalizationResampling(const double pfive[5], const int projId, ParticleBloc
     
     //cout<<"mass of particle: "<<newParticle.GetMass()<<". lab mass: "<<sqrt(BHp0*BHp0-BHpx*BHpx-BHpy*BHpy-BHpz*BHpz)<<endl;//KF:debug 
 
-
-    nPart = particlesList.Size();
+    if (gClassicalizationFraction>=1){//for more than 100% classicalization there is no normal interaction
+      for (int i=0; i<nPart0;i++){
+          particlesList.Delete(0);//it should be correct to always delete the first particle since the array will shrink each time
+      }
+    }
+    
+    int nPart = particlesList.Size();
     sumEnergy = 0;
 
     for (int i=0;i<nPart;i++){
