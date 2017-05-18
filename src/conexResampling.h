@@ -36,6 +36,7 @@ extern double gClassicalonMass;//Mass of classical quanta
 extern double gClasigma;//Clasicalization cross section
 extern double gSigma0;//regular cross section
 extern bool gClassicalizationOff;
+extern bool gFinalState;
 
 double ProbDistDat[1001];
 bool ReadData=true;

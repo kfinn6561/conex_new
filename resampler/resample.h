@@ -22,6 +22,7 @@ extern double gClassicalonMass;//KF
 extern double gClasigma;//KF
 extern double gSigma0;//KF
 extern bool gClassicalizationOff;
+extern bool gFinalState;
 
 namespace resample {
   

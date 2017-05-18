@@ -37,6 +37,7 @@ double gClassicalonMass=0.17;
 double gClasigma=0.;
 double gSigma0=1.;
 bool gClassicalizationOff=false;
+bool gFinalState=true;
 
 resample::EResampleMode gResamplingMode = resample::eNone;
 
