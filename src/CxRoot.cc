@@ -603,7 +603,7 @@ CxRoot::GetOptions(int argc, char** argv)
   help << " -X [crossSectionFactor] -P [mesonExtraFactor] -M [resamplingFactor] -L [prtcleListMode] -F [prtcleListFile]"
        << " -T [modifications-threshold]"
        << " -R [resampling mode]\n"
-       << "-C [Classicalization threshold], -N [Classicalization number rescaling], -c [Classicalon Mass], -Q [turn off classicalization], -G [turn off final state]\n"  
+       << "-C [Classicalization threshold], -N [Classicalization number rescaling], -c [Classicalon Mass], -f [fixed classicalization fraction], -Q [turn off classicalization], -G [turn off final state]\n"  
        << "\n"
        << "     prtcle-list-mode: i (i>0) - write particles of generation i, 0 - OFF, <0 - read from file \n"
        << "      resampling-mode:  1 - multiplicity, 2 - elasticity, 3 - EMratio, 4 - ChargeRatio, 5 - Pi0spec, 6 - LeadingRho0, 7 - BaryonProduction \n";

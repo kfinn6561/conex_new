@@ -2564,6 +2564,7 @@ ClassicalizationResampling(const double pfive[5], const int projId, ParticleBloc
       ParticleBlockEntry& tParticle=particlesList.GetEntry(i);
       //cout<<i<<"  "<<tParticle.GetEnergy()<<endl;//KF:debug
       sumEnergy+=tParticle.GetEnergy();
+      cout<<"Feynman x "<<(tParticle.GetPx()*pfive[0]+tParticle.GetPy()*pfive[1]+tParticle.GetPz()*pfive[2])/(pfive[0]*pfive[0]+pfive[1]*pfive[1]+pfive[2]*pfive[2])<<endl;//KF:debug
     }
 
     cout<<"after resampling. NParticles: "<<nPart<<" total energy: "<<sumEnergy<<endl;//KF:debug  
