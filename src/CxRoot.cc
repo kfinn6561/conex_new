@@ -603,7 +603,7 @@ CxRoot::GetOptions(int argc, char** argv)
   help << " -X [crossSectionFactor] -P [mesonExtraFactor] -M [resamplingFactor] -L [prtcleListMode] -F [prtcleListFile]"
        << " -T [modifications-threshold]"
        << " -R [resampling mode]\n"
-       << "-C [Classicalization threshold], -N [Classicalization number rescaling], -c [Classicalon Mass], -f [fixed classicalization fraction], -Q [turn off classicalization], -G [turn off final state]\n"  
+       << "-C [Classicalization threshold], -N [Classicalization number rescaling], -c [Classicalon Mass], -f [fixed classicalization fraction], -w [forward resampling threshold], -Q [turn off classicalization], -G [turn off final state]\n"  
        << "\n"
        << "     prtcle-list-mode: i (i>0) - write particles of generation i, 0 - OFF, <0 - read from file \n"
        << "      resampling-mode:  1 - multiplicity, 2 - elasticity, 3 - EMratio, 4 - ChargeRatio, 5 - Pi0spec, 6 - LeadingRho0, 7 - BaryonProduction \n";
@@ -621,12 +621,15 @@ CxRoot::GetOptions(int argc, char** argv)
   gClassicalizationFlag=false;
   gClassicalizationFraction=0.0;
   gFixedFraction=0.9;
+  gForwardThreshold=0.1;
   gNscaling=1.0;
   gClassicalonMass=0.17;//mass of classical quanta (this may want to be changed for the kaon mass)
   gClasigma=0.;
   gSigma0=1.;
   gClassicalizationOff=false;//if true turns off classicalization behaviour
   gFinalState=true;//whether to change the final state
+  gForward=false;//turns on forward resampling
+  
 #endif
 
 
@@ -636,7 +639,7 @@ CxRoot::GetOptions(int argc, char** argv)
   options = "K:" + options;
 #endif
 #ifdef CONEX_EXTENSIONS
-  options = "GQc:N:C:X:P:M:T:L:F:R:f:" + options;
+  options = "GQc:N:C:X:P:M:T:L:F:R:f:w:" + options;
 #endif
   while ((c = getopt (argc, argv, options.c_str())) != -1) {
     switch (c) {
@@ -717,6 +720,14 @@ CxRoot::GetOptions(int argc, char** argv)
       {
 	gFinalState=false;
 	cout<<"final state turned off"<<endl;
+	break;
+      }
+    case 'w'://KF: forward resampling
+      {
+	gForwardThreshold=atof(optarg);
+	gForward=true;
+	gClassicalizationOff=true;//forward resampling incompatible with classicalization
+	cout<<"forward resampling. x threshold "<<gForwardThreshold<<endl;
 	break;
       }
       

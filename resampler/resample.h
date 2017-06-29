@@ -21,8 +21,10 @@ extern double gNscaling;//KF
 extern double gClassicalonMass;//KF
 extern double gClasigma;//KF
 extern double gSigma0;//KF
+extern double gForwardThreshold;
 extern bool gClassicalizationOff;
 extern bool gFinalState;
+extern bool gForward;
 
 namespace resample {
   

@@ -597,6 +597,50 @@ modifiercx_(double& factMod, const double& energy, const int& pid)
   //cout << " gFactorCrossSection=" << gFactorCrossSection << ", gFactorExtraMeson=" << gFactorExtraMeson  << ", e=" << energy << ", f=" << factMod << endl;
 }
 
+void
+forwardresampling_(double* pfive, CommonBlockCONEX& blockPtr)
+{
+  CommonBlockWrapperCONEX pblock(blockPtr, false);
+  double px,py,pz,E;
+  //cout<<"starting forward Resampling"<<endl;
+  if (gForward)
+    {
+      int nPart = pblock.Size();
+      //cout<<"npart: "<<nPart<<endl;//KF:debug
+
+      for (int i=0;i<nPart;i++){
+	//cout<<"particle "<<i<<endl;//KF:debug
+	ParticleBlockEntry& tParticle=pblock.GetEntry(i);
+	double feyn_x=(tParticle.GetPx()*pfive[0]+tParticle.GetPy()*pfive[1]+tParticle.GetPz()*pfive[2])/(pfive[0]*pfive[0]+pfive[1]*pfive[1]+pfive[2]*pfive[2]);
+	if (feyn_x>gForwardThreshold||feyn_x<-gForwardThreshold){
+	  
+	  pblock.Duplicate(i);
+	  int NewParticleID=CommonBlockParticleCONEX::ePi0;//add a pi0
+	  ParticleBlockEntry& newParticle=pblock.GetEntry(pblock.Size());
+	  newParticle.SetId(NewParticleID);
+	  newParticle.SetMass(CommonBlockParticleCONEX::GetMass(NewParticleID));//set mass and id
+	  px=0.5*tParticle.GetPx();
+	  py=0.5*tParticle.GetPy();
+	  pz=0.5*tParticle.GetPz();
+	  E=0.5*tParticle.GetEnergy();
+
+	  tParticle.SetPx(px);
+	  tParticle.SetPy(py);
+	  tParticle.SetPz(pz);
+	  tParticle.SetEnergy(E);
+	  newParticle.SetPx(px);
+	  newParticle.SetPy(py);
+	  newParticle.SetPz(pz);
+	  newParticle.SetEnergy(E);
+	  
+	  //cout<<tParticle.GetId()<<" "<<tParticle.GetName()<<" Feynman X is: "<<feyn_x<<endl;
+	}
+      }
+      //cout<<"old number: "<<nPart<<" New number: "<<pblock.Size()<<endl;
+    }else{
+    //cout<<"checked for forward resampling but found none."<<endl;//KF:debug
+  }
+}//end forwardresampling 
 
 void
 addclassicalization_(CommonBlockCONEX& blockPtr, double* pfive, int& primaryId, double& Mtarg)

@@ -36,8 +36,10 @@ double gNscaling=1.0;
 double gClassicalonMass=0.17;
 double gClasigma=0.;
 double gSigma0=1.;
+double gForwardThreshold=0.1;
 bool gClassicalizationOff=false;
 bool gFinalState=true;
+bool gForward=false;
 
 resample::EResampleMode gResamplingMode = resample::eNone;
 

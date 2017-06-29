@@ -35,8 +35,10 @@ extern double gNscaling;//classicalization number scaling
 extern double gClassicalonMass;//Mass of classical quanta
 extern double gClasigma;//Clasicalization cross section
 extern double gSigma0;//regular cross section
+extern double gForwardThreshold;//x threshold for forward resampling
 extern bool gClassicalizationOff;
 extern bool gFinalState;
+extern bool gForward;//flag to perform forward resampling
 
 double ProbDistDat[1001];
 bool ReadData=true;
@@ -51,7 +53,8 @@ class CommonBlockSIBYLL_LAB;
 extern "C" {
 
   void addclassicalization_(CommonBlockCONEX& blockPtr, double* pfive, int& primaryId, double& Mtarg);//KF
-  
+
+  void forwardresampling_(double* pfive, CommonBlockCONEX& blockPtr);//KF
   void resampleconex_(CommonBlockCONEX& p, double& x, int& primaryId);
   void resamplesibyll_(CommonBlockSIBYLL& p, double& x, int& primaryId,
 		       float& sqs, double& plab);
