@@ -615,23 +615,49 @@ forwardresampling_(double* pfive, CommonBlockCONEX& blockPtr)
 	if (feyn_x>gForwardThreshold||feyn_x<-gForwardThreshold){
 	  
 	  pblock.Duplicate(i);
-	  int NewParticleID=CommonBlockParticleCONEX::ePi0;//add a pi0
+
+	  //Add something here to change pi/K ratio
+
+	  double typeSwitch=gRandom->Rndm();//choose which particle to spit out, from pions and kaons
+
+	  //resample::CommonBlockParticleCONEX::EParticleId NewParticleID;//default to pi0
+	  int NewParticleID=CommonBlockParticleCONEX::ePi0;//default to pi0
+	  if (typeSwitch<20./44.){
+	    NewParticleID=CommonBlockParticleCONEX::ePi0;//pi0
+	  }else if (typeSwitch<30./44.){
+	    NewParticleID=CommonBlockParticleCONEX::ePiP;//pi+
+	  }else if (typeSwitch<40./44.){
+	    NewParticleID=CommonBlockParticleCONEX::ePiM;//pi-
+	  }else if (typeSwitch<41./44.){
+	    NewParticleID=CommonBlockParticleCONEX::eKshort;//K_s
+	  }else if (typeSwitch<42./44.){
+	    NewParticleID=CommonBlockParticleCONEX::eKlong;//K_l
+	  }else if (typeSwitch<43./44.){
+	    NewParticleID=CommonBlockParticleCONEX::eKP;//K+
+	  }else {
+	    NewParticleID=CommonBlockParticleCONEX::eKM;//K-
+	  }
+	  
 	  ParticleBlockEntry& newParticle=pblock.GetEntry(pblock.Size());
 	  newParticle.SetId(NewParticleID);
 	  newParticle.SetMass(CommonBlockParticleCONEX::GetMass(NewParticleID));//set mass and id
-	  px=0.5*tParticle.GetPx();
-	  py=0.5*tParticle.GetPy();
-	  pz=0.5*tParticle.GetPz();
-	  E=0.5*tParticle.GetEnergy();
 
-	  tParticle.SetPx(px);
-	  tParticle.SetPy(py);
-	  tParticle.SetPz(pz);
-	  tParticle.SetEnergy(E);
-	  newParticle.SetPx(px);
-	  newParticle.SetPy(py);
-	  newParticle.SetPz(pz);
-	  newParticle.SetEnergy(E);
+	  double newfrac=gRandom->Rndm();
+
+
+	  px=tParticle.GetPx();
+	  py=tParticle.GetPy();
+	  pz=tParticle.GetPz();
+	  E=tParticle.GetEnergy();
+
+	  tParticle.SetPx(px*(1-newfrac));
+	  tParticle.SetPy(py*(1-newfrac));
+	  tParticle.SetPz(pz*(1-newfrac));
+	  tParticle.SetEnergy(E*(1-newfrac));
+	  newParticle.SetPx(px*newfrac);
+	  newParticle.SetPy(py*newfrac);
+	  newParticle.SetPz(pz*newfrac);
+	  newParticle.SetEnergy(E*newfrac);
 	  
 	  //cout<<tParticle.GetId()<<" "<<tParticle.GetName()<<" Feynman X is: "<<feyn_x<<endl;
 	}
